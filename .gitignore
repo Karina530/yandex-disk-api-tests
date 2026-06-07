@@ -1,0 +1,24 @@
+# Виртуальное окружение
+venv/
+env/
+.venv/
+
+# Файлы Python (кэш и байт-код)
+__pycache__/
+*.py[cod]
+*.so
+
+# Файлы с секретами (важно для config.py!)
+.env
+config_local.py
+secrets.py
+*.pem
+
+# Логи и отчеты
+.pytest_cache/
+
+
+# Редакторы кода
+.vscode/
+
+
