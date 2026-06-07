@@ -7,6 +7,7 @@
 """
 
 import time
+import uuid
 import pytest
 
 
@@ -18,9 +19,10 @@ class TestUploadFileByUrl:
     """Happy Path для POST /v1/disk/resources/upload"""
 
     def test_upload_returns_accepted(self, client, test_folder, test_file_url):
+        time.sleep(5)
         """Загрузка возвращает 201 или 202."""
         response = client.upload_file_by_url(
-            path=f"{test_folder}/test.txt", url=test_file_url
+            path=f"{test_folder}/test_{uuid.uuid4().hex}.txt", url=test_file_url
         )
         assert response.status_code in [201, 202], (
             f"Статус загрузки: {response.status_code}"
@@ -55,7 +57,7 @@ class TestUploadFileByUrl:
         if check.status_code != 200:
             client.create_folder(test_folder)
         response = client.upload_file_by_url(
-            path=f"{test_folder}/fields.txt",
+            path=f"{test_folder}/fields_{int(time.time())}.txt",
             url=test_file_url,
             fields="name,size,created"
         )
@@ -70,20 +72,24 @@ class TestCopyResource:
     """Happy Path для POST /v1/disk/resources/copy."""
 
     def test_copy_creates_duplicate(self, client, test_folder):
-        """Копирование создаёт дубликат папки."""
+        """Копирование создаёт дубликат папки"""
         copy_path = f"{test_folder}_copy"
         client.delete_resource(copy_path)
-        time.sleep(5)
+        time.sleep(1)  
 
-        response = client.copy_resource(from_path=test_folder, path=copy_path)
-        assert response.status_code in [200, 201, 202], (
-            f"Копирование: статус {response.status_code}, ответ: {response.json()}"
-        )
+        try:
+            response = client.copy_resource(from_path=test_folder, path=copy_path)
+            assert response.status_code in [200, 201, 202], (
+                f"Копирование: статус {response.status_code}"
+            )
 
-        assert client.get_resources(test_folder).status_code == 200, "Источник недоступен"
-        assert client.get_resources(copy_path).status_code == 200, "Копия не создана"
+            
+            time.sleep(3)
 
-        client.delete_resource(copy_path)
+            assert client.get_resources(test_folder).status_code == 200, "Источник недоступен"
+            assert client.get_resources(copy_path).status_code == 200, "Копия не создана"
+        finally:
+            client.delete_resource(copy_path)
 
     def test_copy_with_overwrite(self, client, test_folder):
         """Копирование с overwrite=true перезаписывает существующий ресурс."""

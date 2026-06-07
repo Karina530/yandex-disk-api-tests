@@ -125,7 +125,7 @@ class TestGetResourcesNegative:
             f"offset={desc}: статус {response.status_code}"
         )
 
-    # ── sort: невалидные значения ──
+    #sort: невалидные значения
 
     @pytest.mark.parametrize("sort,desc", [
         ("color", "несуществующее поле"),

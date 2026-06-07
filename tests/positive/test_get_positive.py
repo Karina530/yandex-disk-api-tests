@@ -280,7 +280,7 @@ class TestGetOperationStatus:
     
     def test_offset_works_with_limit(self, client, test_folder, multiple_files_in_folder):
         """Параметр offset смещает выдачу"""
-        time.sleep(5)
+        time.sleep(10)
 
         page1 = client.get_resources(test_folder, limit=1, offset=0)
         page2 = client.get_resources(test_folder, limit=1, offset=1)
