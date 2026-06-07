@@ -10,9 +10,9 @@
 import time
 import pytest
 
-# ================================================================
+
 # PUT /v1/disk/resources — негативные
-# ================================================================
+
 
 @pytest.mark.negative
 class TestCreateFolderNegative:
